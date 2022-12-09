@@ -1,0 +1,11 @@
+{% extends "basic.html" %}
+
+{% block content %}
+    <h1>Products</h1>
+
+    <ul>
+        {% for prod in list %}
+            <li><a href="{% url 'product_sep' prod.name %}">{{ prod.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
