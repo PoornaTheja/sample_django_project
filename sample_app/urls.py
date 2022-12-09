@@ -20,6 +20,6 @@ from sample_api.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('model/', include('sample_api.urls')),
-    path('original/', video_stream, name = "video_stream"),
-    path('masked/', masked_video_stream, name = "masked_video_stream")
+    # path('original/', video_stream, name = "video_stream"),
+    # path('masked/', masked_video_stream, name = "masked_video_stream")
 ]
