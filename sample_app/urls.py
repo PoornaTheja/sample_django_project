@@ -23,7 +23,7 @@ urlpatterns = [
     # path('original/', video_stream, name = "video_stream"),
     # path('gray/', gray_video_stream, name = "gray_video_stream"),
     path('', home, name = "home"),
-    path('rgb_gray', rgb_gray, name="rgb_gray")
+    path('rgb_gray/', rgb_gray, name="rgb_gray")
 ]
 
 from django.conf import settings
