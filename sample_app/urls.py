@@ -21,5 +21,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('model/', include('sample_api.urls')),
     # path('original/', video_stream, name = "video_stream"),
-    # path('masked/', masked_video_stream, name = "masked_video_stream")
+    # path('gray/', gray_video_stream, name = "gray_video_stream"),
+    path('', home, name = "home"),
+    path('rgb_gray', rgb_gray, name="rgb_gray")
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+if settings.DEBUG:
+        urlpatterns += static(settings.MEDIA_URL,
+                              document_root=settings.MEDIA_ROOT)

@@ -30,11 +30,14 @@ def product_sep_view(request, prod_name):
 
 # from django.http import HttpResponse
 # from django.shortcuts import render
+from django.urls import reverse
 # from .models import *
 # from django.core.mail import EmailMessage
 # from django.views.decorators import gzip
 # from django.http import StreamingHttpResponse
-# import cv2
+import cv2
+import numpy as np
+from django.core.files.base import ContentFile
 # import threading
 
 # class VideoCamera(object):
@@ -51,7 +54,7 @@ def product_sep_view(request, prod_name):
 #         _, jpeg = cv2.imencode('.jpg', image)
 #         return jpeg.tobytes()
     
-#     def get_masked_frame(self):
+#     def get_gray_frame(self):
 #         image = self.frame
 #         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 #         _, jpeg = cv2.imencode('.jpg', image)
@@ -67,9 +70,9 @@ def product_sep_view(request, prod_name):
 #         yield (b'--frame\r\n'
 #                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
         
-# def masked_gen(camera):
+# def gray_gen(camera):
 #     while True:
-#         frame = camera.get_masked_frame()
+#         frame = camera.get_gray_frame()
 #         yield (b'--frame\r\n'
 #                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
@@ -87,11 +90,52 @@ def product_sep_view(request, prod_name):
 
 
 # @gzip.gzip_page
-# def masked_video_stream(request):
+# def gray_video_stream(request):
 #     try:
 #         # cam = VideoCamera()
-#         return StreamingHttpResponse(masked_gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
+#         return StreamingHttpResponse(gray_gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
 #     except:
 #         pass
 #     print("!!!!!!")
 #     return render(request, 'basic.html')
+
+
+def home(request):
+    color_url = reverse('video_stream')
+    gray_url = reverse('gray_video_stream')
+    context = {"color" : color_url,
+               "gray" : gray_url}    
+    
+    return render(request, 'home.html', context)
+
+
+def rgb_gray(request):
+    context = {}
+    if request.method == "POST":
+        request.FILES['img'].name = request.POST["title"] + "_color.jpg"
+        print(request.POST)
+        print(request.FILES)
+        form = image_form(request.POST, request.FILES)
+        if form.is_valid():
+            title = form.cleaned_data.get("title")
+            img = form.cleaned_data.get("img")
+            obj = image.objects.create(title = title, img = img)            
+
+            np_img = cv2.imread("media/" + str(obj.img))
+            gray_img = cv2.cvtColor(np_img, cv2.COLOR_BGR2GRAY)
+            
+            gray_img1 = cv2.imencode('.jpg', gray_img)[1]
+            file = ContentFile(gray_img1)
+            obj.gray.save(title + "_gray.jpg", file, save=True)
+            obj.save()
+            
+            context['color'] = np_img
+            context['gray'] = cv2.cvtColor(np_img, cv2.COLOR_BGR2GRAY)
+            context['current_img'] = obj
+            
+        return render(request, "rgb_gray/result.html", context)
+    else:
+        form = image_form()
+        context['form']= form
+        return render(request, "rgb_gray/home.html", context)
+    

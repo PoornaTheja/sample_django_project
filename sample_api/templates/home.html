@@ -1,0 +1,14 @@
+{% extends "basic.html" %}
+
+{% block content %}
+    <h1 style="text-align: center;">RGB to Gray scale convertion</h1>
+
+    <div style="width: 40%; height: 530px; border: 1px solid #000; float: left; margin: 4%;">
+        <img src="{{color}}" style="width: 100%; height: 90%;">
+    </div>
+    
+    <div style="width: 40%; height: 530px; border: 1px solid #000; float: left; margin: 4%;">
+        <img src="{{gray}}" style="width: 100%; height: 90%;">
+    </div>
+
+{% endblock %}
