@@ -101,12 +101,13 @@ from django.core.files.base import ContentFile
 
 
 def home(request):
-    color_url = reverse('video_stream')
-    gray_url = reverse('gray_video_stream')
-    context = {"color" : color_url,
-               "gray" : gray_url}    
+    # color_url = reverse('video_stream')
+    # gray_url = reverse('gray_video_stream')
+    # context = {"color" : color_url,
+    #            "gray" : gray_url}    
     
-    return render(request, 'home.html', context)
+    # return render(request, 'home.html', context)
+    return render(request, 'basic.html')
 
 
 def rgb_gray(request):
@@ -129,13 +130,14 @@ def rgb_gray(request):
             obj.gray.save(title + "_gray.jpg", file, save=True)
             obj.save()
             
+            context['form']= form
             context['color'] = np_img
             context['gray'] = cv2.cvtColor(np_img, cv2.COLOR_BGR2GRAY)
             context['current_img'] = obj
             
-        return render(request, "rgb_gray/result.html", context)
     else:
         form = image_form()
         context['form']= form
-        return render(request, "rgb_gray/home.html", context)
+        
+    return render(request, "rgb_gray/home.html", context)
     
