@@ -38,6 +38,7 @@ from django.urls import reverse
 import cv2
 import numpy as np
 from django.core.files.base import ContentFile
+from django.views.decorators.csrf import csrf_exempt
 # import threading
 
 # class VideoCamera(object):
@@ -110,6 +111,7 @@ def home(request):
     return render(request, 'basic.html')
 
 
+@csrf_exempt 
 def rgb_gray(request):
     context = {}
     if request.method == "POST":
